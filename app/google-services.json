@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "917376292209",
+    "firebase_url": "https://uab-parking-buddy.firebaseio.com",
+    "project_id": "uab-parking-buddy",
+    "storage_bucket": "uab-parking-buddy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917376292209:android:41cd8fa640ffe85b",
+        "android_client_info": {
+          "package_name": "net.rofael.uabparkingfinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "917376292209-mn2gmik57i4k3p8ed2aojh7hp37g4tdn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-aVAa-vbYaDafexArw6LF6Obq21rsHCo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">UAB Parking Finder</string>
+    <string name="parking_name">parking_lot_name</string>
+    <string name="parking_status">parking_lot_status</string>
+    <string name="ask_about_parking">How full is the parking lot?</string>
+    <string name="light_parking">Somewhat empty</string>
+    <string name="medium_parking">Filling up</string>
+    <string name="heavy_parking">Almost full</string>
+    <string name="send_status">Send</string>
+    <string name="recent_reports">Recent Reports</string>
+    <string-array name="reports_array">
+        <item>@string/ask_about_parking</item>
+        <item>@string/light_parking</item>
+        <item>@string/medium_parking</item>
+        <item>@string/heavy_parking</item>
+    </string-array>
+</resources>
