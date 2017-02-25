@@ -3,6 +3,8 @@ package net.rofael.uabparkingfinder;
 import android.os.Parcelable;
 import android.os.Parcel;
 
+import java.util.ArrayList;
+
 /**
  * Created by Rofael on 2/24/2017.
  */
@@ -57,6 +59,20 @@ public class Parking implements Parcelable {
         }
 
         return null;
+    }
+
+    public void overallParkingStatus(ArrayList<Report> input)
+    {
+        double reportTimeSum = 0;
+        if (input.size() < 5)
+        {
+            status = -1;
+        }
+        for (int i = 0; i < input.size(); i++)
+        {
+            reportTimeSum = reportTimeSum+input.get(i).getStatus();
+        }
+        status = (int) java.lang.Math.ceil(reportTimeSum/input.size());
     }
 
     @Override

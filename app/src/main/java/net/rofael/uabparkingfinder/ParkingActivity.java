@@ -29,6 +29,7 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.database.*;
 
 import java.lang.reflect.Array;
 
@@ -74,16 +75,10 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         reportData.add("Report");
 
         SharedPreferences sharedPrefs = getPreferences(Context.MODE_PRIVATE);
-        /*if (sharedPrefs.getBoolean("savedData",false))
-        {
-            try {
-                loadPreferenecs();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }*/
+        final SharedPreferences.Editor edit = sharedPrefs.edit();
+        String commitName;
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         Button confirmClick = (Button) findViewById(R.id.send_staus);
         confirmClick.setOnClickListener(new View.OnClickListener() {
@@ -162,16 +157,55 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
 
     }
 
-    public void addToList()
-    {
-        reportType = drop.getSelectedItemPosition()-1;
-        if (reportType > -1 && reportType < 3)
-        {
+    public void addToList() {
+        reportType = drop.getSelectedItemPosition() - 1;
+        if (reportType > -1 && reportType < 3) {
             reports.add(new Report(lot, reportType));
-            reportData.add(reports.get(reports.size() - 1).readableLastReportTime());
-            reportData.add(reports.get(reports.size() - 1).viewStatus());
-            stringListAdapter.notifyDataSetChanged();
+            mDatabase.child("lots").child(lot.toString()).push().child("reports").setValue(reports.get(reports.size() - 1));
         }
+        mDatabase.child("lots").child(lot.toString()).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (reports.size()>0) {
+                    reportData.add(reports.get(reports.size() - 1).readableLastReportTime());
+                    reportData.add(reports.get(reports.size() - 1).viewStatus());
+                    stringListAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Iterable<DataSnapshot> it = dataSnapshot.getChildren();
+                for (DataSnapshot postSnap : it) {
+                    Report in = postSnap.child("reports").getValue(Report.class);
+                    in = new Report(lot,in.getStatus(),in.getReportTime());
+                    reports.add(in);
+                    reportData.add(reports.get(reports.size() - 1).readableLastReportTime());
+                    reportData.add(reports.get(reports.size() - 1).viewStatus());
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+
     }
 
     private int reportType;
@@ -181,4 +215,5 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
     private ArrayAdapter<String> stringListAdapter;
     private Spinner drop;
     private String filename;
+    private DatabaseReference mDatabase;
 }

@@ -24,6 +24,11 @@ public class Report
         time = timeSent;
     }
 
+    public int getStatus()
+    {
+        return status;
+    }
+
     public long getReportTime()
     {
         return time;
