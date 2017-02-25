@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "917376292209-lj3dlj7fjs8hio19cjo402npa6t5iqql.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.rofael.uabparkingfinder",
+            "certificate_hash": "12332c3aaa7c000f49d368b8abb0737fec7f4162"
+          }
+        },
+        {
           "client_id": "917376292209-mn2gmik57i4k3p8ed2aojh7hp37g4tdn.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "917376292209-mn2gmik57i4k3p8ed2aojh7hp37g4tdn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

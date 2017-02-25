@@ -10,13 +10,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.support.v4.widget.SwipeRefreshLayout.*;
-
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.*;
+
 
 import java.util.ArrayList;
 
@@ -35,6 +35,10 @@ public class MainMenu extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        mFireBaseAuth = FirebaseAuth.getInstance();
+        mFireBaseAuth.signInAnonymously();
+        mFireBaseUser = mFireBaseAuth.getCurrentUser();
 
         lots.add(testLot1);
         lots.add(testLot2);
@@ -101,6 +105,10 @@ public class MainMenu extends AppCompatActivity {
     private Parking testLot2 = new Parking("testLot2");
     private Parking testLot3 = new Parking("testLot3");
     private Parking testLot4 = new Parking("testLot4");
+    private FirebaseAuth mFireBaseAuth;
+    private FirebaseUser mFireBaseUser;
+
+
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
