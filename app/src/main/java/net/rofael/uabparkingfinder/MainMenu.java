@@ -15,7 +15,8 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.firebase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class MainMenu extends AppCompatActivity {
         lots.add(testLot2);
         lots.add(testLot3);
 
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, lotList);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lotList);
         final GridView list = (GridView) findViewById(R.id.parking_list);
         list.setNumColumns(2);
         list.setAdapter(adapter);
@@ -99,8 +100,8 @@ public class MainMenu extends AppCompatActivity {
         });
     }
 
-    private ArrayList<Parking> lots = new ArrayList<Parking>();
-    private ArrayList<String> lotList = new ArrayList<String>();
+    private ArrayList<Parking> lots = new ArrayList<>();
+    private ArrayList<String> lotList = new ArrayList<>();
     private Parking testLot1 = new Parking("testLot1");
     private Parking testLot2 = new Parking("testLot2");
     private Parking testLot3 = new Parking("testLot3");
