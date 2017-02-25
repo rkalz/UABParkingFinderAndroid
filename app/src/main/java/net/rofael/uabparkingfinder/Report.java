@@ -57,21 +57,24 @@ public class Report
     public String readableLastReportTime()
     {
         long timeDif = System.currentTimeMillis() - getReportTime();
-        int seconds = ((int) timeDif / 1000) % 60;
-        int minutes = (seconds / 60) % 60;
-        int hours = (minutes / 60) % 24;
+        int seconds = ((int) timeDif / 1000);
+        int minutes = (seconds / 60);
+        int hours = (minutes / 60);
         int days = hours / 24;
 
         if (days > 0)
         {
+            hours = hours % 24;
             return Integer.toString(days) + " days and " + Integer.toString(hours) + " hours ago";
         }
         else if (hours > 0)
         {
+            minutes = minutes % 60;
             return Integer.toString(hours) + " hours and " + Integer.toString(minutes) + " minutes ago";
         }
         else if (minutes > 0)
         {
+            seconds = seconds % 60;
             return Integer.toString(minutes) + " minutes and " + Integer.toString(seconds) + " seconds ago";
         }
         else

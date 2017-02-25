@@ -1,6 +1,7 @@
 package net.rofael.uabparkingfinder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 import android.content.Context;
@@ -252,6 +253,5 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
     private GridView gridList;
     private ArrayAdapter<String> stringListAdapter;
     private Spinner drop;
-    private String filename;
     private DatabaseReference mDatabase;
 }
