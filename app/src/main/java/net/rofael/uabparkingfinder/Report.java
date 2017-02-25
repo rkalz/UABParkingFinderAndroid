@@ -82,5 +82,10 @@ public class Report
 
     }
 
+    public boolean equals(Object o2)
+    {
+        return (this.getReportTime() == ((Report) o2).getReportTime());
+    }
+
 
 }

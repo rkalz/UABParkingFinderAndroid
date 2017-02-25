@@ -1,13 +1,7 @@
 package net.rofael.uabparkingfinder;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
+
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -32,6 +26,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.database.*;
 
 import java.lang.reflect.Array;
+import java.util.Map;
 
 public class ParkingActivity extends AppCompatActivity implements OnItemSelectedListener {
 
@@ -79,6 +74,31 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         String commitName;
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child(lot.toString()).limitToLast(10).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot reportSnapshot: dataSnapshot.getChildren())
+                {
+                    long reportTime = (long) reportSnapshot.child("reportTime").getValue();
+                    long reportStatus = (long) reportSnapshot.child("status").getValue();
+                    int reportStat = Integer.parseInt(Long.toString(reportStatus));
+                    Report rep = new Report(lot,reportStat,reportTime);
+                    if (!reports.contains(rep))
+                    {
+                        reports.add(rep);
+                        reportData.add(reports.get(reports.size() - 1).readableLastReportTime());
+                        reportData.add(reports.get(reports.size() - 1).viewStatus());
+                        stringListAdapter.notifyDataSetChanged();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         Button confirmClick = (Button) findViewById(R.id.send_staus);
         confirmClick.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +110,32 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                     reportData.set(i, reports.get((i/2)-1).readableLastReportTime());
                 }
                 adapter2.notifyDataSetChanged();
+
+                mDatabase.child(lot.toString()).limitToLast(10).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot reportSnapshot: dataSnapshot.getChildren())
+                        {
+                            long reportTime = (long) reportSnapshot.child("reportTime").getValue();
+                            long reportStatus = (long) reportSnapshot.child("status").getValue();
+                            int reportStat = Integer.parseInt(Long.toString(reportStatus));
+                            Report rep = new Report(lot,reportStat,reportTime);
+                            if (!reports.contains(rep))
+                            {
+                                reports.add(rep);
+                                reportData.add(reports.get(reports.size() - 1).readableLastReportTime());
+                                reportData.add(reports.get(reports.size() - 1).viewStatus());
+                                stringListAdapter.notifyDataSetChanged();
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 
@@ -99,6 +145,31 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
+                        mDatabase.child(lot.toString()).limitToLast(10).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot reportSnapshot: dataSnapshot.getChildren())
+                                {
+                                    long reportTime = (long) reportSnapshot.child("reportTime").getValue();
+                                    long reportStatus = (long) reportSnapshot.child("status").getValue();
+                                    int reportStat = Integer.parseInt(Long.toString(reportStatus));
+                                    Report rep = new Report(lot,reportStat,reportTime);
+                                    if (!reports.contains(rep))
+                                    {
+                                        reports.add(rep);
+                                        reportData.add(reports.get(reports.size() - 1).readableLastReportTime());
+                                        reportData.add(reports.get(reports.size() - 1).viewStatus());
+                                        stringListAdapter.notifyDataSetChanged();
+                                    }
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                         for (int i = 2; i < reportData.size(); i = i + 2)
                         {
                             reportData.set(i, reports.get((i/2)-1).readableLastReportTime());
@@ -161,51 +232,18 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         reportType = drop.getSelectedItemPosition() - 1;
         if (reportType > -1 && reportType < 3) {
             reports.add(new Report(lot, reportType));
-            mDatabase.child("lots").child(lot.toString()).push().child("reports").setValue(reports.get(reports.size() - 1));
+            mDatabase.child(lot.toString()).push().setValue(reports.get(reports.size() - 1));
+            reportData.add(reports.get(reports.size() - 1).readableLastReportTime());
+            reportData.add(reports.get(reports.size() - 1).viewStatus());
+            stringListAdapter.notifyDataSetChanged();
         }
-        mDatabase.child("lots").child(lot.toString()).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if (reports.size()>0) {
-                    reportData.add(reports.get(reports.size() - 1).readableLastReportTime());
-                    reportData.add(reports.get(reports.size() - 1).viewStatus());
-                    stringListAdapter.notifyDataSetChanged();
-                }
-            }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Iterable<DataSnapshot> it = dataSnapshot.getChildren();
-                for (DataSnapshot postSnap : it) {
-                    Report in = postSnap.child("reports").getValue(Report.class);
-                    in = new Report(lot,in.getStatus(),in.getReportTime());
-                    reports.add(in);
-                    reportData.add(reports.get(reports.size() - 1).readableLastReportTime());
-                    reportData.add(reports.get(reports.size() - 1).viewStatus());
-                }
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     @Override
     public void onBackPressed()
     {
-
+        super.onBackPressed();
     }
 
     private int reportType;

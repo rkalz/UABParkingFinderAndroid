@@ -38,10 +38,6 @@ public class MainMenu extends AppCompatActivity {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
-        mFireBaseAuth = FirebaseAuth.getInstance();
-        mFireBaseAuth.signInAnonymously();
-        mFireBaseUser = mFireBaseAuth.getCurrentUser();
-
         lots.add(testLot1);
         lots.add(testLot2);
         lots.add(testLot3);
@@ -107,9 +103,6 @@ public class MainMenu extends AppCompatActivity {
     private Parking testLot2 = new Parking("testLot2");
     private Parking testLot3 = new Parking("testLot3");
     private Parking testLot4 = new Parking("testLot4");
-    private FirebaseAuth mFireBaseAuth;
-    private FirebaseUser mFireBaseUser;
-
 
 
     /**
