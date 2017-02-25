@@ -15,7 +15,7 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.firebase.*;
+import com.google.firebase;
 
 
 import java.util.ArrayList;
