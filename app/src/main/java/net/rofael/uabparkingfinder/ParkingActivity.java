@@ -75,31 +75,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         String commitName;
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child(lot.toString()).limitToLast(10).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot reportSnapshot: dataSnapshot.getChildren())
-                {
-                    long reportTime = (long) reportSnapshot.child("reportTime").getValue();
-                    long reportStatus = (long) reportSnapshot.child("status").getValue();
-                    int reportStat = Integer.parseInt(Long.toString(reportStatus));
-                    Report rep = new Report(lot,reportStat,reportTime);
-                    if (!reports.contains(rep))
-                    {
-                        reports.add(rep);
-                        reportData.add(reports.get(reports.size() - 1).readableLastReportTime());
-                        reportData.add(reports.get(reports.size() - 1).viewStatus());
-                        stringListAdapter.notifyDataSetChanged();
-                    }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        checkFirebase();
 
         Button confirmClick = (Button) findViewById(R.id.send_staus);
         confirmClick.setOnClickListener(new View.OnClickListener() {
@@ -111,32 +87,6 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                     reportData.set(i, reports.get((i/2)-1).readableLastReportTime());
                 }
                 adapter2.notifyDataSetChanged();
-
-                mDatabase.child(lot.toString()).limitToLast(10).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot reportSnapshot: dataSnapshot.getChildren())
-                        {
-                            long reportTime = (long) reportSnapshot.child("reportTime").getValue();
-                            long reportStatus = (long) reportSnapshot.child("status").getValue();
-                            int reportStat = Integer.parseInt(Long.toString(reportStatus));
-                            Report rep = new Report(lot,reportStat,reportTime);
-                            if (!reports.contains(rep))
-                            {
-                                reports.add(rep);
-                                reportData.add(reports.get(reports.size() - 1).readableLastReportTime());
-                                reportData.add(reports.get(reports.size() - 1).viewStatus());
-                                stringListAdapter.notifyDataSetChanged();
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
             }
         });
 
@@ -146,35 +96,11 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        mDatabase.child(lot.toString()).limitToLast(10).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot reportSnapshot: dataSnapshot.getChildren())
-                                {
-                                    long reportTime = (long) reportSnapshot.child("reportTime").getValue();
-                                    long reportStatus = (long) reportSnapshot.child("status").getValue();
-                                    int reportStat = Integer.parseInt(Long.toString(reportStatus));
-                                    Report rep = new Report(lot,reportStat,reportTime);
-                                    if (!reports.contains(rep))
-                                    {
-                                        reports.add(rep);
-                                        reportData.add(reports.get(reports.size() - 1).readableLastReportTime());
-                                        reportData.add(reports.get(reports.size() - 1).viewStatus());
-                                        stringListAdapter.notifyDataSetChanged();
-                                    }
-                                }
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
                         for (int i = 2; i < reportData.size(); i = i + 2)
                         {
                             reportData.set(i, reports.get((i/2)-1).readableLastReportTime());
                         }
+
                         adapter2.notifyDataSetChanged();
                         listSwipe.setRefreshing(false);
                     }
@@ -234,18 +160,56 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         if (reportType > -1 && reportType < 3) {
             reports.add(new Report(lot, reportType));
             mDatabase.child(lot.toString()).push().setValue(reports.get(reports.size() - 1));
-            reportData.add(reports.get(reports.size() - 1).readableLastReportTime());
-            reportData.add(reports.get(reports.size() - 1).viewStatus());
-            stringListAdapter.notifyDataSetChanged();
         }
+        checkFirebase();
 
     }
 
-    @Override
-    public void onBackPressed()
+    public void checkFirebase()
     {
-        super.onBackPressed();
+
+        mDatabase.child(lot.toString()).limitToLast(10).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot reportSnapshot: dataSnapshot.getChildren())
+                {
+                    long reportTime = (long) reportSnapshot.child("reportTime").getValue();
+                    long reportStatus = (long) reportSnapshot.child("status").getValue();
+                    int reportStat = Integer.parseInt(Long.toString(reportStatus));
+                    Report rep = new Report(lot,reportStat,reportTime);
+                    if (!reports.contains(rep))
+                    {
+                        reports.add(rep);
+                        reportData.add(reports.get(reports.size()-1).readableLastReportTime());
+                        reportData.add(reports.get(reports.size()-1).viewStatus());
+                        stringListAdapter.notifyDataSetChanged();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+       /* Collections.reverse(reports);
+        if (reports.size() > 10)
+        {
+            for (int i = 10; i < reports.size(); i++)
+            {
+                reports.remove(i);
+            }
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            reportData.add(reports.get(i).readableLastReportTime());
+            reportData.add(reports.get(i).viewStatus());
+            stringListAdapter.notifyDataSetChanged();
+        }*/
     }
+
 
     private int reportType;
     private ArrayList<Report> reports = new ArrayList<Report>();
