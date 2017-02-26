@@ -165,7 +165,6 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
             mDatabase.child(lot.toString()).push().setValue(reports.get(reports.size() - 1));
             checkFirebase();
         }
-        Collections.reverse(reports);
 
 
 
@@ -189,7 +188,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                     }
                 }
 
-                Collections.reverse(reports);
+                Collections.sort(reports, new ReportComparator());
                 if (reports.size() > 0)
                 {
                     for (int i = 2; i < reportData.size(); i = i + 2) {
