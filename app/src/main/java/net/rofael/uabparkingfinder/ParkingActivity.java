@@ -69,6 +69,10 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         list.setAdapter(adapter2);
         reportData.add("Time");
         reportData.add("Report");
+        for (int i = 0; i < 20; i++)
+        {
+            reportData.add("");
+        }
 
         SharedPreferences sharedPrefs = getPreferences(Context.MODE_PRIVATE);
         final SharedPreferences.Editor edit = sharedPrefs.edit();
@@ -82,11 +86,6 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
             public void onClick(View v)
             {
                 addToList();
-                for (int i = 2; i < reportData.size(); i = i + 2)
-                {
-                    reportData.set(i, reports.get((i/2)-1).readableLastReportTime());
-                }
-                adapter2.notifyDataSetChanged();
             }
         });
 
@@ -96,12 +95,16 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        for (int i = 2; i < reportData.size(); i = i + 2)
+                        if (reports.size() > 0)
                         {
-                            reportData.set(i, reports.get((i/2)-1).readableLastReportTime());
-                        }
+                            for (int i = 2; i < reportData.size(); i = i + 2)
+                            {
+                                reportData.set(i, reports.get((i / 2) - 1).readableLastReportTime());
+                            }
 
-                        adapter2.notifyDataSetChanged();
+                            adapter2.notifyDataSetChanged();
+                            listSwipe.setRefreshing(false);
+                        }
                         listSwipe.setRefreshing(false);
                     }
                 }
@@ -160,8 +163,11 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         if (reportType > -1 && reportType < 3) {
             reports.add(new Report(lot, reportType));
             mDatabase.child(lot.toString()).push().setValue(reports.get(reports.size() - 1));
+            checkFirebase();
         }
-        checkFirebase();
+        Collections.reverse(reports);
+
+
 
     }
 
@@ -180,12 +186,18 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                     if (!reports.contains(rep))
                     {
                         reports.add(rep);
-                        reportData.add(reports.get(reports.size()-1).readableLastReportTime());
-                        reportData.add(reports.get(reports.size()-1).viewStatus());
-                        stringListAdapter.notifyDataSetChanged();
                     }
                 }
 
+                Collections.reverse(reports);
+                if (reports.size() > 0)
+                {
+                    for (int i = 2; i < reportData.size(); i = i + 2) {
+                        reportData.set(i, reports.get((i / 2) - 1).readableLastReportTime());
+                        reportData.set(i + 1, reports.get((i / 2) - 1).viewStatus());
+                        stringListAdapter.notifyDataSetChanged();
+                    }
+                }
             }
 
             @Override
@@ -194,20 +206,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
             }
         });
 
-       /* Collections.reverse(reports);
-        if (reports.size() > 10)
-        {
-            for (int i = 10; i < reports.size(); i++)
-            {
-                reports.remove(i);
-            }
-        }
-        for (int i = 0; i < 10; i++)
-        {
-            reportData.add(reports.get(i).readableLastReportTime());
-            reportData.add(reports.get(i).viewStatus());
-            stringListAdapter.notifyDataSetChanged();
-        }*/
+
     }
 
 
