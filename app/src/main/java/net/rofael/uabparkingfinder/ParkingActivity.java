@@ -97,7 +97,16 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                     public void onRefresh() {
                         if (reports.size() > 0)
                         {
-                            for (int i = 2; i < reportData.size(); i = i + 2)
+                            int max = 0;
+                            if (reports.size() < 10)
+                            {
+                                max = 2*reports.size() + 2;
+                            }
+                            else if (reports.size() >= 10)
+                            {
+                                max = reportData.size();
+                            }
+                            for (int i = 2; i < max; i = i + 2)
                             {
                                 reportData.set(i, reports.get((i / 2) - 1).readableLastReportTime());
                             }
@@ -191,7 +200,16 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                 Collections.sort(reports, new ReportComparator());
                 if (reports.size() > 0)
                 {
-                    for (int i = 2; i < reportData.size(); i = i + 2) {
+                    int max = 0;
+                    if (reports.size() < 10)
+                    {
+                        max = 2*reports.size() + 2;
+                    }
+                    else if (reports.size() >= 10)
+                    {
+                        max = reportData.size();
+                    }
+                    for (int i = 2; i < max; i = i + 2) {
                         reportData.set(i, reports.get((i / 2) - 1).readableLastReportTime());
                         reportData.set(i + 1, reports.get((i / 2) - 1).viewStatus());
                         stringListAdapter.notifyDataSetChanged();
