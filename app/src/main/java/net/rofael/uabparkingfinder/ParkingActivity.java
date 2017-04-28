@@ -46,27 +46,30 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parking);
 
+        // Receives name of parking lot from selection in main menu
         lot = (Parking) getIntent().getParcelableExtra("Parking");
         TextView setParkingName = (TextView) findViewById(R.id.parking_name);
         TextView setParkingStatus = (TextView) findViewById(R.id.parking_status);
 
+        // Sets text based on the selection
         setParkingName.setText(lot.toString());
         setParkingStatus.setText(lot.viewStatus());
 
+        // Sets up the drop down box for report selection
         final Spinner dropDownBox = (Spinner) findViewById(R.id.status_selection);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.reports_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dropDownBox.setAdapter(adapter);
-
+        ArrayAdapter<CharSequence> dropDownBoxAdapter = ArrayAdapter.createFromResource(this, R.array.reports_array, android.R.layout.simple_spinner_item);
+        dropDownBoxAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dropDownBox.setAdapter(dropDownBoxAdapter);
         dropDownBox.setOnItemSelectedListener(this);
         drop = dropDownBox;
 
-        final ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, reportData);
-        final GridView list = (GridView) findViewById(R.id.recent_reports_table);
-        gridList = list;
-        stringListAdapter = adapter2;
-        list.setNumColumns(2);
-        list.setAdapter(adapter2);
+        // Sets up the table that stores the report information
+        final ArrayAdapter<String> listOfReportsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, reportData);
+        final GridView listOfReports = (GridView) findViewById(R.id.recent_reports_table);
+        gridList = listOfReports;
+        stringListAdapter = listOfReportsAdapter;
+        listOfReports.setNumColumns(2);
+        listOfReports.setAdapter(listOfReportsAdapter);
         reportData.add("Time");
         reportData.add("Report");
         for (int i = 0; i < 20; i++)
@@ -74,13 +77,15 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
             reportData.add("");
         }
 
-        SharedPreferences sharedPrefs = getPreferences(Context.MODE_PRIVATE);
+        /*SharedPreferences sharedPrefs = getPreferences(Context.MODE_PRIVATE);
         final SharedPreferences.Editor edit = sharedPrefs.edit();
-        String commitName;
+        String commitName;*/
 
+        // Initializes connection to Google Firebase and checks for reports from server
         mDatabase = FirebaseDatabase.getInstance().getReference();
         checkFirebase();
 
+        // Initializes the Send button
         Button confirmClick = (Button) findViewById(R.id.send_staus);
         confirmClick.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
@@ -89,8 +94,8 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
             }
         });
 
+        // Code for the swipe refresh
         final SwipeRefreshLayout listSwipe = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_report_list);
-
         listSwipe.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -111,7 +116,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                                 reportData.set(i, reports.get((i / 2) - 1).readableLastReportTime());
                             }
 
-                            adapter2.notifyDataSetChanged();
+                            listOfReportsAdapter.notifyDataSetChanged();
                             listSwipe.setRefreshing(false);
                         }
                         listSwipe.setRefreshing(false);
@@ -167,6 +172,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
 
     }
 
+    // Creates a new report and sends it to Firebase
     public void addToList() {
         reportType = drop.getSelectedItemPosition() - 1;
         if (reportType > -1 && reportType < 3) {
@@ -179,6 +185,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
 
     }
 
+    // Checks reports from Google Firebase. Downloads them if we don't have them.
     public void checkFirebase()
     {
 
@@ -187,6 +194,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot reportSnapshot: dataSnapshot.getChildren())
                 {
+                    // Adds a report from Firebase to the list if it hasn't been downloaded
                     long reportTime = (long) reportSnapshot.child("reportTime").getValue();
                     long reportStatus = (long) reportSnapshot.child("status").getValue();
                     int reportStat = Integer.parseInt(Long.toString(reportStatus));
@@ -197,6 +205,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                     }
                 }
 
+                // Populates the text list of reports based on the report list
                 Collections.sort(reports, new ReportComparator());
                 if (reports.size() > 0)
                 {

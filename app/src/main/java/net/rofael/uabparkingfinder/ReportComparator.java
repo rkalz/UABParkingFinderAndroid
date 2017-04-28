@@ -6,6 +6,7 @@ import java.util.Comparator;
  * Created by Rofael on 2/24/2017.
  */
 
+// Sorts reports in descending order (newest before oldest)
 public class ReportComparator implements Comparator
 {
     public int compare(Object o1, Object o2)

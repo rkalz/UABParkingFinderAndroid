@@ -38,10 +38,12 @@ public class MainMenu extends AppCompatActivity {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
+        // Adds testlots to list of lots
         lots.add(testLot1);
         lots.add(testLot2);
         lots.add(testLot3);
 
+        // Initializes table holding list of lots
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lotList);
         final GridView list = (GridView) findViewById(R.id.parking_list);
         list.setNumColumns(2);
@@ -59,7 +61,7 @@ public class MainMenu extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         accessNewLotMenu(list);
 
-
+        // Refreses list of lots, adding of testLot4 is for testing purposes
         final SwipeRefreshLayout mainSwipe = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_main);
 
         mainSwipe.setOnRefreshListener(
@@ -77,6 +79,7 @@ public class MainMenu extends AppCompatActivity {
         );
     }
 
+    // When a lot is pressed, changes to that lot's menu
     public void accessNewLotMenu(GridView list)
     {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
