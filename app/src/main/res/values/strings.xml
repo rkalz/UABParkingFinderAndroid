@@ -14,4 +14,7 @@
         <item>@string/medium_parking</item>
         <item>@string/heavy_parking</item>
     </string-array>
+    <string name="categories">Placeholder, Placeholder, Placeholder</string>
+    <string name="distance">0.00mi</string>
+    <string name="no_reports">No Reports Yet</string>
 </resources>

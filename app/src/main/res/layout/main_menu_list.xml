@@ -24,13 +24,32 @@
         android:layout_height="wrap_content"
         android:textSize="10sp"
         android:paddingLeft="5dp"
-        android:layout_below="@+id/parking_name"
-        android:layout_toRightOf="@+id/map"/>
+        android:layout_below="@+id/categories"
+        android:layout_toRightOf="@+id/map"
+        android:paddingTop="3dp"/>
     <ImageView
         android:id="@+id/status_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        android:paddingTop="5dp"/>
+    <TextView
+        android:id="@+id/categories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:paddingLeft="5dp"
+        android:layout_below="@+id/parking_name"
+        android:layout_toRightOf="@+id/map"
+        android:paddingTop="3dp"/>
+    <TextView
+        android:id="@+id/distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:paddingLeft="5dp"
+        android:layout_below="@+id/status_indicator"
+        android:layout_alignParentRight="true"
+        android:paddingTop="3dp"/>
 
 </RelativeLayout>
