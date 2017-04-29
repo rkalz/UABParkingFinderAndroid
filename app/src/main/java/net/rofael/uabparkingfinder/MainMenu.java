@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ListView;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -44,19 +45,19 @@ public class MainMenu extends AppCompatActivity {
         lots.add(testLot3);
 
         // Initializes table holding list of lots
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lotList);
-        final GridView list = (GridView) findViewById(R.id.parking_list);
-        list.setNumColumns(2);
+        final MainMenuListAdapter adapter = new MainMenuListAdapter(this,lots);
+        final ListView list = (ListView) findViewById(R.id.parking_list);
+
         list.setAdapter(adapter);
 
-        lotList.add("Parking Lot");
-        lotList.add("Status");
+        //lotList.add("Parking Lot");
+        //lotList.add("Status");
 
-        for (int i = 0; i < lots.size(); i++)
+        /*for (int i = 0; i < lots.size(); i++)
         {
             lotList.add(lots.get(i).toString());
             lotList.add(lots.get(i).viewStatus());
-        }
+        }*/
 
         adapter.notifyDataSetChanged();
         accessNewLotMenu(list);
@@ -69,8 +70,8 @@ public class MainMenu extends AppCompatActivity {
                     @Override
                     public void onRefresh() {
                         lots.add(testLot4);
-                        lotList.add(lots.get(lots.size()-1).toString());
-                        lotList.add(lots.get(lots.size()-1).viewStatus());
+                        //lotList.add(lots.get(lots.size()-1).toString());
+                        //lotList.add(lots.get(lots.size()-1).viewStatus());
                         adapter.notifyDataSetChanged();
                         accessNewLotMenu(list);
                         mainSwipe.setRefreshing(false);
@@ -80,7 +81,7 @@ public class MainMenu extends AppCompatActivity {
     }
 
     // When a lot is pressed, changes to that lot's menu
-    public void accessNewLotMenu(GridView list)
+    public void accessNewLotMenu(ListView list)
     {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -88,20 +89,23 @@ public class MainMenu extends AppCompatActivity {
 
                 Intent intent = new Intent(MainMenu.this, ParkingActivity.class);
 
-                for (int i = 2; i < lotList.size(); i = i + 2)
+                intent.putExtra("Parking",lots.get(position));
+                startActivity(intent);
+
+                /*for (int i = 2; i < lotList.size(); i = i + 2)
                 {
                     if (position == i)
                     {
                         intent.putExtra("Parking", lots.get((i/2) - 1));
                         startActivity(intent);
                     }
-                }
+                }*/
             }
         });
     }
 
     private ArrayList<Parking> lots = new ArrayList<>();
-    private ArrayList<String> lotList = new ArrayList<>();
+    //private ArrayList<String> lotList = new ArrayList<>();
     private Parking testLot1 = new Parking("testLot1");
     private Parking testLot2 = new Parking("testLot2");
     private Parking testLot3 = new Parking("testLot3");
