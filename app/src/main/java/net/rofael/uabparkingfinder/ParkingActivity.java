@@ -53,7 +53,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
 
         // Sets text based on the selection
         setParkingName.setText(lot.toString());
-        setParkingStatus.setText(lot.viewStatus());
+        setParkingStatus.setText(R.string.parking_status);
 
         // Sets up the drop down box for report selection
         final Spinner dropDownBox = (Spinner) findViewById(R.id.status_selection);

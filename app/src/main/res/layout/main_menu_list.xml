@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/map"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_gravity="left"
+        android:paddingRight="5dp"
+        />
+    <TextView
+        android:id="@+id/parking_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:paddingTop="5dp"
+        android:paddingLeft="5dp"
+        android:layout_toRightOf="@+id/map"/>
+    <TextView
+        android:id="@+id/last_report_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:paddingLeft="5dp"
+        android:layout_below="@+id/categories"
+        android:layout_toRightOf="@+id/map"
+        android:paddingTop="3dp"/>
+    <ImageView
+        android:id="@+id/status_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:paddingTop="5dp"/>
+    <TextView
+        android:id="@+id/categories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:paddingLeft="5dp"
+        android:layout_below="@+id/parking_name"
+        android:layout_toRightOf="@+id/map"
+        android:paddingTop="3dp"/>
+    <TextView
+        android:id="@+id/distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:paddingLeft="5dp"
+        android:layout_below="@+id/status_indicator"
+        android:layout_alignParentRight="true"
+        android:paddingTop="3dp"/>
+
+</RelativeLayout>
