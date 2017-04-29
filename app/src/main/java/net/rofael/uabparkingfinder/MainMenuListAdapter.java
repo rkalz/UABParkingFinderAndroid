@@ -43,11 +43,13 @@ public class MainMenuListAdapter extends ArrayAdapter<Parking> {
 
         ImageView mapImg = (ImageView) rowView.findViewById(R.id.map);
         TextView name = (TextView) rowView.findViewById(R.id.parking_name);
-        final TextView status = (TextView) rowView.findViewById(R.id.last_report_time);
+        final TextView lastReport = (TextView) rowView.findViewById(R.id.last_report_time);
+        ImageView status = (ImageView) rowView.findViewById(R.id.status_indicator) ;
 
-        Uri placeholder = Uri.parse("https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=5&size=50x50");
-        mapImg.setImageURI(placeholder);
+        mapImg.setImageResource(R.drawable.unk);
         name.setText(lotList.get(position).toString());
+        status.setImageResource(R.drawable.unk);
+
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.child(lotList.get(position).toString()).limitToLast(1).addValueEventListener(new ValueEventListener() {
@@ -60,11 +62,11 @@ public class MainMenuListAdapter extends ArrayAdapter<Parking> {
                     int reportStat = Integer.parseInt(Long.toString(reportStatus));
                     Report rep = new Report(lotList.get(position), reportStat, reportTime);
                     if (rep != null) {
-                        status.setText("Last report: " + rep.readableLastReportTime());
+                        lastReport.setText("Last report: " + rep.readableLastReportTime());
                     }
                     else
                     {
-                        status.setText("No reports yet");
+                        lastReport.setText("No reports yet");
                     }
                 }
             }
