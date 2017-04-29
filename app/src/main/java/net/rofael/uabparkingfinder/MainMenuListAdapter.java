@@ -1,15 +1,9 @@
 package net.rofael.uabparkingfinder;
 
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -48,7 +43,8 @@ class MainMenuListAdapter extends ArrayAdapter<Parking> {
         View rowView = inflater.inflate(R.layout.main_menu_list, null, true);
 
         // Recover the different components of our layour
-        ImageView mapImg = (ImageView) rowView.findViewById(R.id.map);
+
+        ImageView gmap = (ImageView) rowView.findViewById(R.id.map);
         TextView name = (TextView) rowView.findViewById(R.id.parking_name);
         final TextView lastReport = (TextView) rowView.findViewById(R.id.last_report_time);
         ImageView status = (ImageView) rowView.findViewById(R.id.status_indicator);
@@ -56,7 +52,7 @@ class MainMenuListAdapter extends ArrayAdapter<Parking> {
         TextView dist = (TextView) rowView.findViewById(R.id.distance);
 
         // Assign values to the different components
-        mapImg.setImageResource(R.drawable.unk);
+        gmap.setImageResource(R.drawable.unk);
         name.setText(lotList.get(position).toString());
         status.setImageResource(R.drawable.unk);
         cats.setText(R.string.categories);
@@ -86,16 +82,7 @@ class MainMenuListAdapter extends ArrayAdapter<Parking> {
         });
 
         // Set photo to map location
-        try {
-            GMapsImage dl = new GMapsImage();
-            dl.execute("https://maps.googleapis.com/maps/api/staticmap?center=University+of+Alabama+at+Birmingham&zoom=13&size=75x75");
-            Bitmap bmp = dl.get();
-            mapImg.setImageBitmap(bmp);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+        Picasso.with(context).load("https://maps.googleapis.com/maps/api/staticmap?center=University+of+Alabama+at+Birmingham&zoom=13&size=75x75").into(gmap);
 
         return rowView;
     }

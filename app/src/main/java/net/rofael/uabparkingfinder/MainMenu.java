@@ -45,15 +45,6 @@ public class MainMenu extends AppCompatActivity {
 
         list.setAdapter(adapter);
 
-        //lotList.add("Parking Lot");
-        //lotList.add("Status");
-
-        /*for (int i = 0; i < lots.size(); i++)
-        {
-            lotList.add(lots.get(i).toString());
-            lotList.add(lots.get(i).viewStatus());
-        }*/
-
         adapter.notifyDataSetChanged();
         accessNewLotMenu(list);
 
@@ -64,12 +55,10 @@ public class MainMenu extends AppCompatActivity {
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
+                        mainSwipe.setRefreshing(false);
                         lots.add(testLot4);
-                        //lotList.add(lots.get(lots.size()-1).toString());
-                        //lotList.add(lots.get(lots.size()-1).viewStatus());
                         adapter.notifyDataSetChanged();
                         accessNewLotMenu(list);
-                        mainSwipe.setRefreshing(false);
                     }
                 }
         );
@@ -87,20 +76,11 @@ public class MainMenu extends AppCompatActivity {
                 intent.putExtra("Parking",lots.get(position));
                 startActivity(intent);
 
-                /*for (int i = 2; i < lotList.size(); i = i + 2)
-                {
-                    if (position == i)
-                    {
-                        intent.putExtra("Parking", lots.get((i/2) - 1));
-                        startActivity(intent);
-                    }
-                }*/
             }
         });
     }
 
     private ArrayList<Parking> lots = new ArrayList<>();
-    //private ArrayList<String> lotList = new ArrayList<>();
     private Parking testLot1 = new Parking("testLot1");
     private Parking testLot2 = new Parking("testLot2");
     private Parking testLot3 = new Parking("testLot3");

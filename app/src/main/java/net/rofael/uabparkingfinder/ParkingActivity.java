@@ -77,9 +77,6 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
             reportData.add("");
         }
 
-        /*SharedPreferences sharedPrefs = getPreferences(Context.MODE_PRIVATE);
-        final SharedPreferences.Editor edit = sharedPrefs.edit();
-        String commitName;*/
 
         // Initializes connection to Google Firebase and checks for reports from server
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -100,6 +97,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
+
                         if (reports.size() > 0)
                         {
                             int max = 0;
