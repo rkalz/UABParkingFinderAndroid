@@ -10,24 +10,28 @@ class Report
     private int status;
     private long time;
 
-    Report(Parking lot, int stat)
+    public Report() {}
+
+    public Report(Parking lot, int stat)
     {
         parking = lot;
         status = stat;
         time = System.currentTimeMillis();
     }
 
-    Report(Parking lot, int stat, long timeSent)
+    public Report(Parking lot, int stat, long timeSent)
     {
         parking = lot;
         status = stat;
         time = timeSent;
     }
 
-    long getReportTime()
+    public long getReportTime()
     {
         return time;
     }
+
+    public int getStatus() { return status; }
 
     String viewStatus()
     {

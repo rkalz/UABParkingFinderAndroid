@@ -67,12 +67,12 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/recent_reports_title">
 
-        <GridView
+        <ListView
             android:id="@+id/recent_reports_table"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentStart="true">
-        </GridView>
+        </ListView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
 

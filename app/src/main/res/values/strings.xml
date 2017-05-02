@@ -17,4 +17,5 @@
     <string name="categories">Placeholder, Placeholder, Placeholder</string>
     <string name="distance">0.00mi</string>
     <string name="no_reports">No Reports Yet</string>
+    <string name="status_pending">Pending</string>
 </resources>

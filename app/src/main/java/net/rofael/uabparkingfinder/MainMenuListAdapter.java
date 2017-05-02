@@ -19,9 +19,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by aleez on 4/28/2017.
@@ -42,8 +39,7 @@ class MainMenuListAdapter extends ArrayAdapter<Parking> {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.main_menu_list, null, true);
 
-        // Recover the different components of our layour
-
+        // Recover the different components of our layout
         ImageView gmap = (ImageView) rowView.findViewById(R.id.map);
         TextView name = (TextView) rowView.findViewById(R.id.parking_name);
         final TextView lastReport = (TextView) rowView.findViewById(R.id.last_report_time);

@@ -17,7 +17,8 @@
         android:textSize="20sp"
         android:paddingTop="5dp"
         android:paddingLeft="5dp"
-        android:layout_toRightOf="@+id/map"/>
+        android:layout_toRightOf="@+id/map"
+        android:layout_toEndOf="@+id/map"/>
     <TextView
         android:id="@+id/last_report_time"
         android:layout_width="wrap_content"
@@ -26,30 +27,37 @@
         android:paddingLeft="5dp"
         android:layout_below="@+id/categories"
         android:layout_toRightOf="@+id/map"
+        android:layout_toEndOf="@+id/map"
         android:paddingTop="3dp"/>
     <ImageView
         android:id="@+id/status_indicator"
+        android:contentDescription="@string/parking_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:paddingTop="5dp"/>
     <TextView
         android:id="@+id/categories"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="10sp"
+        android:textSize="12sp"
         android:paddingLeft="5dp"
+        android:paddingStart="5dp"
         android:layout_below="@+id/parking_name"
         android:layout_toRightOf="@+id/map"
+        android:layout_toEndOf="@+id/map"
         android:paddingTop="3dp"/>
     <TextView
         android:id="@+id/distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="10sp"
+        android:textSize="12sp"
         android:paddingLeft="5dp"
+        android:paddingStart="5dp"
         android:layout_below="@+id/status_indicator"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:paddingTop="3dp"/>
 
 </RelativeLayout>

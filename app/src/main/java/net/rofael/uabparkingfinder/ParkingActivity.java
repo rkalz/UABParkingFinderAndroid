@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
@@ -64,7 +65,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         drop = dropDownBox;
 
         // Sets up the table that stores the report information
-        final ArrayAdapter<String> listOfReportsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, reportData);
+        /*final ArrayAdapter<String> listOfReportsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, reportData);
         final GridView listOfReports = (GridView) findViewById(R.id.recent_reports_table);
         gridList = listOfReports;
         stringListAdapter = listOfReportsAdapter;
@@ -75,8 +76,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         for (int i = 0; i < 20; i++)
         {
             reportData.add("");
-        }
-
+        }*/
 
         // Initializes connection to Google Firebase and checks for reports from server
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -91,6 +91,10 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
             }
         });
 
+        reportListAdapter = new ReportListAdapter(this,reports);
+        final ListView reportList = (ListView) findViewById(R.id.recent_reports_table);
+        reportList.setAdapter(reportListAdapter);
+
         // Code for the swipe refresh
         final SwipeRefreshLayout listSwipe = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_report_list);
         listSwipe.setOnRefreshListener(
@@ -98,7 +102,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                     @Override
                     public void onRefresh() {
 
-                        if (reports.size() > 0)
+                        /*if (reports.size() > 0)
                         {
                             int max = 0;
                             if (reports.size() < 10)
@@ -117,6 +121,9 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                             listOfReportsAdapter.notifyDataSetChanged();
                             listSwipe.setRefreshing(false);
                         }
+                        listSwipe.setRefreshing(false);*/
+
+                        reportListAdapter.notifyDataSetChanged();
                         listSwipe.setRefreshing(false);
                     }
                 }
@@ -173,9 +180,9 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
     // Creates a new report and sends it to Firebase
     public void addToList() {
         reportType = drop.getSelectedItemPosition() - 1;
+        Report rep = new Report(lot,reportType);
         if (reportType > -1 && reportType < 3) {
-            reports.add(new Report(lot, reportType));
-            mDatabase.child(lot.toString()).push().setValue(reports.get(reports.size() - 1));
+            mDatabase.child(lot.toString()).push().setValue(rep);
             checkFirebase();
         }
 
@@ -184,7 +191,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
     }
 
     // Checks reports from Google Firebase. Downloads them if we don't have them.
-    public void checkFirebase()
+    private void checkFirebase()
     {
 
         mDatabase.child(lot.toString()).limitToLast(10).addValueEventListener(new ValueEventListener() {
@@ -205,7 +212,8 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
 
                 // Populates the text list of reports based on the report list
                 Collections.sort(reports, new ReportComparator());
-                if (reports.size() > 0)
+                reportListAdapter.notifyDataSetChanged();
+                /*if (reports.size() > 0)
                 {
                     int max = 0;
                     if (reports.size() < 10)
@@ -221,7 +229,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                         reportData.set(i + 1, reports.get((i / 2) - 1).viewStatus());
                         stringListAdapter.notifyDataSetChanged();
                     }
-                }
+                }*/
             }
 
             @Override
@@ -238,7 +246,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
     private ArrayList<Report> reports = new ArrayList<Report>();
     private ArrayList<String> reportData = new ArrayList<String>();
     private GridView gridList;
-    private ArrayAdapter<String> stringListAdapter;
+    private ReportListAdapter reportListAdapter;
     private Spinner drop;
     private DatabaseReference mDatabase;
 }

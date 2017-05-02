@@ -44,11 +44,10 @@ public class MainMenu extends AppCompatActivity {
         final ListView list = (ListView) findViewById(R.id.parking_list);
 
         list.setAdapter(adapter);
-
         adapter.notifyDataSetChanged();
         accessNewLotMenu(list);
 
-        // Refreses list of lots, adding of testLot4 is for testing purposes
+        // Refreshes list of lots, adding of testLot4 is for testing purposes
         final SwipeRefreshLayout mainSwipe = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_main);
 
         mainSwipe.setOnRefreshListener(
@@ -65,7 +64,7 @@ public class MainMenu extends AppCompatActivity {
     }
 
     // When a lot is pressed, changes to that lot's menu
-    public void accessNewLotMenu(ListView list)
+    private void accessNewLotMenu(ListView list)
     {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
