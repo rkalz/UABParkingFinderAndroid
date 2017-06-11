@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * Created by aleez on 5/1/2017.
  */
 
-public class ReportListAdapter extends ArrayAdapter<Report> {
+class ReportListAdapter extends ArrayAdapter<Report> {
 
     ReportListAdapter(Activity context, ArrayList<Report> replist)
     {

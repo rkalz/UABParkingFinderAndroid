@@ -58,6 +58,6 @@
         android:layout_below="@+id/status_indicator"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:paddingTop="3dp"/>
+        android:paddingTop="15dp"/>
 
 </RelativeLayout>
