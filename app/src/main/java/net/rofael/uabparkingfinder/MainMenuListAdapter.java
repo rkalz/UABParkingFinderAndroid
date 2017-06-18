@@ -108,7 +108,7 @@ class MainMenuListAdapter extends ArrayAdapter<Parking> {
             parkingLocation.setLongitude(lotList.get(position).getLon());
             float distance = currentLocation.distanceTo(parkingLocation);
             distance = distance / (float) 0.3048;
-            if (distance > 5280) {
+            if (distance > 1000) {
                 distance = distance / (float) 5280;
                 distance = (float) Math.round(distance * 100) / 100;
                 dist.setText(Float.toString(distance) + "mi");
@@ -124,11 +124,11 @@ class MainMenuListAdapter extends ArrayAdapter<Parking> {
         String url = "https://maps.googleapis.com/maps/api/staticmap?center=";
         if (parkingLocation == null)
         {
-            url = "https://maps.googleapis.com/maps/api/staticmap?center=University+of+Alabama+at+Birmingham&zoom=13&size=75x75";
+            url = "https://maps.googleapis.com/maps/api/staticmap?center=University+of+Alabama+at+Birmingham&markers=color:red|University+of+Alabama+at+Birmingham&zoom=13&size=75x75";
         }
         else
         {
-            url = url + Double.toString(parkingLocation.getLatitude()) + "," + Double.toString(parkingLocation.getLongitude()) + "&zoom=13&size=75x75";
+            url = url + Double.toString(parkingLocation.getLatitude()) + "," + Double.toString(parkingLocation.getLongitude()) + "&markers=color:red|" + Double.toString(parkingLocation.getLatitude()) + "," + Double.toString(parkingLocation.getLongitude()) + "&zoom=13&size=75x75";
         }
         Picasso.with(context).load(url).into(gmap);
 

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Spinner;
@@ -26,6 +27,7 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.database.*;
+import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Array;
 import java.util.Map;
@@ -64,20 +66,6 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         dropDownBox.setOnItemSelectedListener(this);
         drop = dropDownBox;
 
-        // Sets up the table that stores the report information
-        /*final ArrayAdapter<String> listOfReportsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, reportData);
-        final GridView listOfReports = (GridView) findViewById(R.id.recent_reports_table);
-        gridList = listOfReports;
-        stringListAdapter = listOfReportsAdapter;
-        listOfReports.setNumColumns(2);
-        listOfReports.setAdapter(listOfReportsAdapter);
-        reportData.add("Time");
-        reportData.add("Report");
-        for (int i = 0; i < 20; i++)
-        {
-            reportData.add("");
-        }*/
-
         // Initializes connection to Google Firebase and checks for reports from server
         mDatabase = FirebaseDatabase.getInstance().getReference();
         checkFirebase();
@@ -101,33 +89,16 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-
-                        /*if (reports.size() > 0)
-                        {
-                            int max = 0;
-                            if (reports.size() < 10)
-                            {
-                                max = 2*reports.size() + 2;
-                            }
-                            else if (reports.size() >= 10)
-                            {
-                                max = reportData.size();
-                            }
-                            for (int i = 2; i < max; i = i + 2)
-                            {
-                                reportData.set(i, reports.get((i / 2) - 1).readableLastReportTime());
-                            }
-
-                            listOfReportsAdapter.notifyDataSetChanged();
-                            listSwipe.setRefreshing(false);
-                        }
-                        listSwipe.setRefreshing(false);*/
-
                         reportListAdapter.notifyDataSetChanged();
                         listSwipe.setRefreshing(false);
                     }
                 }
         );
+
+        // Populates map image
+        ImageView map = (ImageView) findViewById(R.id.directions);
+        map.setImageResource(R.drawable.unk);
+        Picasso.with(this).load("https://maps.googleapis.com/maps/api/staticmap?center=University+of+Alabama+at+Birmingham&zoom=13&size=300x300&markers=color:red|University+of+Alabama+at+Birmingham").into(map);
 
 
     }
@@ -213,23 +184,6 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                 // Populates the text list of reports based on the report list
                 Collections.sort(reports, new ReportComparator());
                 reportListAdapter.notifyDataSetChanged();
-                /*if (reports.size() > 0)
-                {
-                    int max = 0;
-                    if (reports.size() < 10)
-                    {
-                        max = 2*reports.size() + 2;
-                    }
-                    else if (reports.size() >= 10)
-                    {
-                        max = reportData.size();
-                    }
-                    for (int i = 2; i < max; i = i + 2) {
-                        reportData.set(i, reports.get((i / 2) - 1).readableLastReportTime());
-                        reportData.set(i + 1, reports.get((i / 2) - 1).viewStatus());
-                        stringListAdapter.notifyDataSetChanged();
-                    }
-                }*/
             }
 
             @Override
