@@ -7,7 +7,11 @@ import java.util.Collections;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -100,8 +104,24 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         // Populates map image
         ImageView map = (ImageView) findViewById(R.id.directions);
         map.setImageResource(R.drawable.unk);
-        Picasso.with(this).load("https://maps.googleapis.com/maps/api/staticmap?center=University+of+Alabama+at+Birmingham&zoom=13&size=300x300&markers=color:red|University+of+Alabama+at+Birmingham").into(map);
+
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_DENIED) {
+            currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            double currlat = currentLocation.getLatitude();
+            double currlon = currentLocation.getLongitude();
+            String build = String.format(Locale.ENGLISH,"https://maps.googleapis.com/maps/api/staticmap?markers=color:blue||%f,%f&markers=color:red|%f,%f&size=300x300",currlat,currlon,lot.getLat(),lot.getLon());
+            Picasso.with(this).load(build).into(map);
+        }
+        else
+        {
+            String build = String.format(Locale.ENGLISH,"https://maps.googleapis.com/maps/api/staticmap?center=%f,%f&zoom=13&size=300x300&markers=color:red|%f,%f",lot.getLat(),lot.getLon(),lot.getLat(),lot.getLon());
+            Picasso.with(this).load(build).into(map);
+        }
+
+
         map.bringToFront();
+
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,9 +228,8 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
 
     private int reportType;
     private ArrayList<Report> reports = new ArrayList<Report>();
-    private ArrayList<String> reportData = new ArrayList<String>();
-    private GridView gridList;
     private ReportListAdapter reportListAdapter;
     private Spinner drop;
     private DatabaseReference mDatabase;
+    private Location currentLocation;
 }
