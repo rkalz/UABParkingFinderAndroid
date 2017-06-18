@@ -5,6 +5,7 @@ import java.util.Collections;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -30,6 +31,7 @@ import com.google.firebase.database.*;
 import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Array;
+import java.util.Locale;
 import java.util.Map;
 
 public class ParkingActivity extends AppCompatActivity implements OnItemSelectedListener {
@@ -99,7 +101,15 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         ImageView map = (ImageView) findViewById(R.id.directions);
         map.setImageResource(R.drawable.unk);
         Picasso.with(this).load("https://maps.googleapis.com/maps/api/staticmap?center=University+of+Alabama+at+Birmingham&zoom=13&size=300x300&markers=color:red|University+of+Alabama+at+Birmingham").into(map);
-
+        map.bringToFront();
+        map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String gmmIntentUri = String.format(Locale.ENGLISH,"https://www.google.com/maps/search/?api=1&query=%f,%f",lot.getLat(),lot.getLon());
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(gmmIntentUri));
+                startActivity(mapIntent);
+            }
+        });
 
     }
 
