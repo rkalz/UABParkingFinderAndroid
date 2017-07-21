@@ -16,7 +16,6 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-
 import java.util.ArrayList;
 
 public class MainMenu extends AppCompatActivity {
@@ -34,6 +33,10 @@ public class MainMenu extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        // Testing purposes. Turns on Heroku server if it's off.
+        new WakeUpHerokuTask().execute();
+
 
         // Adds testlots to list of lots
         lots.add(testLot1);
