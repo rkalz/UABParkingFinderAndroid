@@ -62,7 +62,7 @@ class MainMenuListAdapter extends ArrayAdapter<Parking> {
 
         // Recover the time of the newest report
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child(lotList.get(position).toString()).limitToLast(1).addValueEventListener(new ValueEventListener() {
+        mDatabase.child("reports").child(lotList.get(position).toString()).limitToLast(1).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot reportSnapshot : dataSnapshot.getChildren()) {
@@ -73,18 +73,39 @@ class MainMenuListAdapter extends ArrayAdapter<Parking> {
                     Report rep = new Report(lotList.get(position), reportStat, reportTime);
 
                     lastReport.setText("Last report: " + rep.readableLastReportTime());
-                    switch (rep.getStatus())
-                    {
-                        case 0:
-                            status.setImageResource(R.drawable.low);
-                            break;
-                        case 1:
-                            status.setImageResource(R.drawable.med);
-                            break;
-                        case 2:
-                            status.setImageResource(R.drawable.high);
-                            break;
-                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        mDatabase.child("overall").child(lotList.get(position).toString()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int overallStatus = -1;
+                if (dataSnapshot.getValue() != null)
+                {
+                    long getRaw = (long) dataSnapshot.getValue();
+                    overallStatus = Integer.parseInt(Long.toString(getRaw));
+                }
+                switch (overallStatus)
+                {
+                    case -1:
+                        status.setImageResource(R.drawable.unk);
+                        break;
+                    case 0:
+                        status.setImageResource(R.drawable.low);
+                        break;
+                    case 1:
+                        status.setImageResource(R.drawable.med);
+                        break;
+                    case 2:
+                        status.setImageResource(R.drawable.high);
+                        break;
                 }
             }
 

@@ -33,6 +33,8 @@ class Report
 
     public int getStatus() { return status; }
 
+    public String getLot() { return parking.toString(); }
+
     String viewStatus()
     {
         if (status == -1)

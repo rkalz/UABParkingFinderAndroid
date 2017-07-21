@@ -58,11 +58,45 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         // Receives name of parking lot from selection in main menu
         lot = (Parking) getIntent().getParcelableExtra("Parking");
         TextView setParkingName = (TextView) findViewById(R.id.parking_name);
-        TextView setParkingStatus = (TextView) findViewById(R.id.parking_status);
+        final TextView setParkingStatus = (TextView) findViewById(R.id.parking_status);
+
+        // Initializes connection to Google Firebase and checks for reports from server
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        checkFirebase();
 
         // Sets text based on the selection
         setParkingName.setText(lot.toString());
-        setParkingStatus.setText(R.string.parking_status);
+        mDatabase.child("overall").child(lot.toString()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int overallStatus = -1;
+                if (dataSnapshot.getValue() != null)
+                {
+                    long getRaw = (long) dataSnapshot.getValue();
+                    overallStatus = Integer.parseInt(Long.toString(getRaw));
+                }
+                switch (overallStatus)
+                {
+                    case -1:
+                        setParkingStatus.setText(R.string.no_reports);
+                        break;
+                    case 0:
+                        setParkingStatus.setText(R.string.light_parking);
+                        break;
+                    case 1:
+                        setParkingStatus.setText(R.string.medium_parking);
+                        break;
+                    case 2:
+                        setParkingStatus.setText(R.string.heavy_parking);
+                        break;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         // Sets up the drop down box for report selection
         final Spinner dropDownBox = (Spinner) findViewById(R.id.status_selection);
@@ -71,10 +105,6 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         dropDownBox.setAdapter(dropDownBoxAdapter);
         dropDownBox.setOnItemSelectedListener(this);
         drop = dropDownBox;
-
-        // Initializes connection to Google Firebase and checks for reports from server
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        checkFirebase();
 
         // Initializes the Send button
         Button confirmClick = (Button) findViewById(R.id.send_staus);
@@ -183,7 +213,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         reportType = drop.getSelectedItemPosition() - 1;
         Report rep = new Report(lot,reportType);
         if (reportType > -1 && reportType < 3) {
-            mDatabase.child(lot.toString()).push().setValue(rep);
+            mDatabase.child("reports").child(lot.toString()).push().setValue(rep);
             checkFirebase();
         }
 
@@ -195,7 +225,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
     private void checkFirebase()
     {
 
-        mDatabase.child(lot.toString()).limitToLast(10).addValueEventListener(new ValueEventListener() {
+        mDatabase.child("reports").child(lot.toString()).limitToLast(10).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot reportSnapshot: dataSnapshot.getChildren())
