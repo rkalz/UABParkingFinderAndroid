@@ -23,6 +23,14 @@ class Parking implements Parcelable {
         lon = -86.8086334;
     }
 
+    Parking(String inName, double inLat, double inLon)
+    {
+        name = inName;
+        status = -1;
+        lat = inLat;
+        lon = inLon;
+    }
+
     Parking(Parcel in) {
         name = in.readString();
         status = in.readInt();

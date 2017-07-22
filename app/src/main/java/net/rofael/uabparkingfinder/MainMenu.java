@@ -1,8 +1,7 @@
 package net.rofael.uabparkingfinder;
 
-import android.content.Context;
 import android.net.Uri;
-import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +14,15 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -34,14 +42,26 @@ public class MainMenu extends AppCompatActivity {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
+        try {
+            out = new GetParkingDataTask().execute().get();
+            for (int i = 0; i < out.length(); i++)
+            {
+                JSONObject obj = (JSONObject) out.get(i);
+                lots.add(new Parking(obj.getString("name"),obj.getDouble("lat"),obj.getDouble("lon")));
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
         // Testing purposes. Turns on Heroku server if it's off.
         new WakeUpHerokuTask().execute();
 
-
         // Adds testlots to list of lots
-        lots.add(testLot1);
+        /*lots.add(testLot1);
         lots.add(testLot2);
-        lots.add(testLot3);
+        lots.add(testLot3);*/
 
         // Initializes table holding list of lots
         final MainMenuListAdapter adapter = new MainMenuListAdapter(this,lots);
@@ -59,7 +79,7 @@ public class MainMenu extends AppCompatActivity {
                     @Override
                     public void onRefresh() {
                         mainSwipe.setRefreshing(false);
-                        lots.add(testLot4);
+                        // lots.add(testLot4);
                         adapter.notifyDataSetChanged();
                         accessNewLotMenu(list);
                     }
@@ -84,10 +104,11 @@ public class MainMenu extends AppCompatActivity {
     }
 
     private ArrayList<Parking> lots = new ArrayList<>();
-    private Parking testLot1 = new Parking("testLot1");
+    JSONArray out = null;
+    /*private Parking testLot1 = new Parking("testLot1");
     private Parking testLot2 = new Parking("testLot2");
     private Parking testLot3 = new Parking("testLot3");
-    private Parking testLot4 = new Parking("testLot4");
+    private Parking testLot4 = new Parking("testLot4");*/
 
 
     /**
