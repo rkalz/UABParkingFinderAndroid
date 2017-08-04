@@ -3,8 +3,6 @@ package net.rofael.uabparkingfinder;
 import android.os.Parcelable;
 import android.os.Parcel;
 
-import java.util.ArrayList;
-
 /**
  * Created by Rofael on 2/24/2017.
  */
