@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.JsonReader;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.InputStream;
@@ -32,7 +33,7 @@ public class GetParkingDataTask extends AsyncTask<Void, Void, JSONArray> {
             s.close();
             dataStream.close();
 
-            out = new JSONArray(data);
+            out = (new JSONObject(data)).getJSONArray("data");
         }
         catch(Exception e){
             e.printStackTrace();

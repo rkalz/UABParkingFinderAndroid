@@ -1,6 +1,7 @@
 package net.rofael.uabparkingfinder;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 
 
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
@@ -34,7 +36,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
 
-public class ParkingActivity extends AppCompatActivity implements OnItemSelectedListener {
+public class ParkingActivity extends AppCompatActivity implements OnItemSelectedListener, LocationListener {
 
     private Parking lot;
     /**
@@ -56,7 +58,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         TextView setParkingName = (TextView) findViewById(R.id.parking_name);
         final TextView setParkingStatus = (TextView) findViewById(R.id.parking_status);
 
-        // Initializes connection to Google Firebase and checks for reports from server
+        // Initializes connection to Google Firebase and checks for mReports from server
         mDatabase = FirebaseDatabase.getInstance().getReference();
         checkFirebase();
 
@@ -94,13 +96,13 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
             }
         });
 
-        // Sets up the drop down box for report selection
+        // Sets up the mDrop down box for report selection
         final Spinner dropDownBox = (Spinner) findViewById(R.id.status_selection);
         ArrayAdapter<CharSequence> dropDownBoxAdapter = ArrayAdapter.createFromResource(this, R.array.reports_array, android.R.layout.simple_spinner_item);
         dropDownBoxAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dropDownBox.setAdapter(dropDownBoxAdapter);
         dropDownBox.setOnItemSelectedListener(this);
-        drop = dropDownBox;
+        mDrop = dropDownBox;
 
         // Initializes the Send button
         Button confirmClick = (Button) findViewById(R.id.send_staus);
@@ -111,9 +113,9 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
             }
         });
 
-        reportListAdapter = new ReportListAdapter(this,reports);
+        mReportListAdapter = new ReportListAdapter(this,mReports);
         final ListView reportList = (ListView) findViewById(R.id.recent_reports_table);
-        reportList.setAdapter(reportListAdapter);
+        reportList.setAdapter(mReportListAdapter);
 
         // Code for the swipe refresh
         final SwipeRefreshLayout listSwipe = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_report_list);
@@ -121,7 +123,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        reportListAdapter.notifyDataSetChanged();
+                        mReportListAdapter.notifyDataSetChanged();
                         listSwipe.setRefreshing(false);
                     }
                 }
@@ -131,11 +133,13 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         ImageView map = (ImageView) findViewById(R.id.directions);
         map.setImageResource(R.drawable.unk);
 
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_DENIED) {
-            currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            double currlat = currentLocation.getLatitude();
-            double currlon = currentLocation.getLongitude();
+            mCurrentLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            double currlat = mCurrentLocation.getLatitude();
+            double currlon = mCurrentLocation.getLongitude();
             String build = String.format(Locale.ENGLISH,"https://maps.googleapis.com/maps/api/staticmap?markers=color:blue||%f,%f&markers=color:red|%f,%f&size=300x300",currlat,currlon,lot.getLat(),lot.getLon());
             Picasso.with(this).load(build).into(map);
         }
@@ -157,6 +161,14 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
             }
         });
 
+    }
+
+    public void onLocationChanged(Location location)
+    {
+        if (location != null)
+        {
+            mLocationManager.removeUpdates(this);
+        }
     }
 
     /**
@@ -206,9 +218,9 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
 
     // Creates a new report and sends it to Firebase
     public void addToList() {
-        reportType = drop.getSelectedItemPosition() - 1;
-        Report rep = new Report(lot,reportType);
-        if (reportType > -1 && reportType < 3) {
+        mReportType = mDrop.getSelectedItemPosition() - 1;
+        Report rep = new Report(lot,mReportType);
+        if (mReportType > -1 && mReportType < 3) {
             mDatabase.child("reports").child(lot.toString()).push().setValue(rep);
             checkFirebase();
         }
@@ -217,7 +229,7 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
 
     }
 
-    // Checks reports from Google Firebase. Downloads them if we don't have them.
+    // Checks mReports from Google Firebase. Downloads them if we don't have them.
     private void checkFirebase()
     {
 
@@ -231,15 +243,15 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
                     long reportStatus = (long) reportSnapshot.child("status").getValue();
                     int reportStat = Integer.parseInt(Long.toString(reportStatus));
                     Report rep = new Report(lot,reportStat,reportTime);
-                    if (!reports.contains(rep))
+                    if (!mReports.contains(rep))
                     {
-                        reports.add(rep);
+                        mReports.add(rep);
                     }
                 }
 
-                // Populates the text list of reports based on the report list
-                Collections.sort(reports, new ReportComparator());
-                reportListAdapter.notifyDataSetChanged();
+                // Populates the text list of mReports based on the report list
+                Collections.sort(mReports, new ReportComparator());
+                mReportListAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -251,11 +263,16 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
 
     }
 
+    public void onProviderDisabled(String arg0) {}
+    public void onProviderEnabled(String arg0) {}
+    public void onStatusChanged(String arg0, int arg1, Bundle arg2) {}
 
-    private int reportType;
-    private ArrayList<Report> reports = new ArrayList<Report>();
-    private ReportListAdapter reportListAdapter;
-    private Spinner drop;
+
+    private int mReportType;
+    private ArrayList<Report> mReports = new ArrayList<Report>();
+    private ReportListAdapter mReportListAdapter;
+    private Spinner mDrop;
     private DatabaseReference mDatabase;
-    private Location currentLocation;
+    private Location mCurrentLocation;
+    LocationManager mLocationManager;
 }
