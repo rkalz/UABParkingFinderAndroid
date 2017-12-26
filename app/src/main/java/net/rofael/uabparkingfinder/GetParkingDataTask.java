@@ -1,14 +1,11 @@
 package net.rofael.uabparkingfinder;
 
 import android.os.AsyncTask;
-import android.util.JsonReader;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Scanner;

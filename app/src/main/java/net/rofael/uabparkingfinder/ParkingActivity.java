@@ -1,10 +1,11 @@
 package net.rofael.uabparkingfinder;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 
 
+import android.*;
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -68,13 +70,11 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int overallStatus = -1;
-                if (dataSnapshot.getValue() != null)
-                {
+                if (dataSnapshot.getValue() != null) {
                     long getRaw = (long) dataSnapshot.getValue();
                     overallStatus = Integer.parseInt(Long.toString(getRaw));
                 }
-                switch (overallStatus)
-                {
+                switch (overallStatus) {
                     case -1:
                         setParkingStatus.setText(R.string.no_reports);
                         break;
@@ -107,13 +107,12 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         // Initializes the Send button
         Button confirmClick = (Button) findViewById(R.id.send_staus);
         confirmClick.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 addToList();
             }
         });
 
-        mReportListAdapter = new ReportListAdapter(this,mReports);
+        mReportListAdapter = new ReportListAdapter(this, mReports);
         final ListView reportList = (ListView) findViewById(R.id.recent_reports_table);
         reportList.setAdapter(mReportListAdapter);
 
@@ -134,18 +133,25 @@ public class ParkingActivity extends AppCompatActivity implements OnItemSelected
         map.setImageResource(R.drawable.unk);
 
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_DENIED) {
-            mCurrentLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            double currlat = mCurrentLocation.getLatitude();
-            double currlon = mCurrentLocation.getLongitude();
-            String build = String.format(Locale.ENGLISH,"https://maps.googleapis.com/maps/api/staticmap?markers=color:blue||%f,%f&markers=color:red|%f,%f&size=300x300",currlat,currlon,lot.getLat(),lot.getLon());
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PackageManager.PERMISSION_GRANTED);
+            String build = String.format(Locale.ENGLISH,"https://maps.googleapis.com/maps/api/staticmap?center=%f,%f&zoom=13&size=300x300&markers=color:red|%f,%f",lot.getLat(),lot.getLon(),lot.getLat(),lot.getLon());
             Picasso.with(this).load(build).into(map);
         }
         else
         {
-            String build = String.format(Locale.ENGLISH,"https://maps.googleapis.com/maps/api/staticmap?center=%f,%f&zoom=13&size=300x300&markers=color:red|%f,%f",lot.getLat(),lot.getLon(),lot.getLat(),lot.getLon());
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            mCurrentLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            double currlat = mCurrentLocation.getLatitude();
+            double currlon = mCurrentLocation.getLongitude();
+            String build = String.format(Locale.ENGLISH, "https://maps.googleapis.com/maps/api/staticmap?markers=color:blue||%f,%f&markers=color:red|%f,%f&size=300x300", currlat, currlon, lot.getLat(), lot.getLon());
             Picasso.with(this).load(build).into(map);
         }
 
